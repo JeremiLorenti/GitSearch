@@ -1,0 +1,52 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Owner {
+  createdAt    DateTime     @default(now())
+  email        String?
+  id           String       @id @default(cuid())
+  name         String?
+  repositories Repository[]
+  updatedAt    DateTime     @updatedAt
+}
+
+model Repository {
+  commit      Commit?   @relation(fields: [commitId], references: [id])
+  commitId    String?
+  createdAt   DateTime  @default(now())
+  dateAdded   DateTime?
+  description String?
+  id          String    @id @default(cuid())
+  lastCommit  DateTime?
+  name        String?
+  owner       Owner?    @relation(fields: [ownerId], references: [id])
+  ownerId     String?
+  stars       Int?
+  tag         Tag?      @relation(fields: [tagId], references: [id])
+  tagId       String?
+  updatedAt   DateTime  @updatedAt
+}
+
+model Commit {
+  author       String?
+  createdAt    DateTime     @default(now())
+  date         DateTime?
+  id           String       @id @default(cuid())
+  message      String?
+  repositories Repository[]
+  updatedAt    DateTime     @updatedAt
+}
+
+model Tag {
+  createdAt    DateTime     @default(now())
+  id           String       @id @default(cuid())
+  name         String?
+  repositories Repository[]
+  updatedAt    DateTime     @updatedAt
+}
